@@ -98,7 +98,7 @@ Tokens
 	{comentario} comentario_bloco_meio = allbutstarandslash*;
 	{comentario} comentario_star = '*';
 	{comentario} comentario_slash = '/';
-	{comentario} comentario_bloco_fecha = '*/';
+	{comentario, normal} comentario_bloco_fecha = '*/';
 	
 //('*'allbutslash)*
 

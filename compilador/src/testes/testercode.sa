@@ -4,16 +4,14 @@ inicio // inicio do programa
 	inteiro i := 0;
 	real j := 1,2;
 	
-	se (i < 1) {
+	se (i < 1) [
 		x := 'a';	
-	} senao { // serve para nada
+	] senao [ // serve para nada
 		x := 'b';
 		/* aushduahsd */
-	}
+	[
 fim.	
 
 /* 
 / /  /* */ /*
 */
-
-
