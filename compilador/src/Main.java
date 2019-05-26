@@ -10,7 +10,7 @@ public class Main {
 		if (args.length > 0) { 
 			try {
 	
-				Lexer lexer = new Lexer (new PushbackReader(new FileReader(args[0])));
+				Comment lexer = new Comment (new PushbackReader(new FileReader(args[0])));
 				Token t = lexer.next();
 				
 				// Impressão do enter, tab e espaço
@@ -28,13 +28,13 @@ public class Main {
 						t = lexer.next(); // para comer o CR e o LR
 					} else if (tab.compareTo(t.getClass().getSimpleName()) == 0) {
 						System.out.print("\t");
-					} else {
-						System.out.print(t.getClass().getSimpleName());
-						if (t.getClass().getSimpleName().compareTo("TComentarioBlocoAbre") == 0 || (t.getClass().getSimpleName().compareTo("TComentarioBlocoMeio") == 0) || t.getClass().getSimpleName().compareTo("TComentarioBlocoFecha") == 0 ) 
-							System.out.println("");
+					} else {				
+						if (t.getClass().getSimpleName().compareTo("TComentarioBlocoAbre") == 0) 
+							System.out.print("TComentarioBloco");
+						else 
+							System.out.print(t.getClass().getSimpleName());
 					}
 					t = lexer.next(); // sempre passa para o próximo
-					
 				}
 				
 			} 
