@@ -1,0 +1,110 @@
+/* Análise léxica */
+
+Helpers
+	tudo = [0 .. 127];
+	all = [tudo - [10 + 13]];
+	//allbutzero = [1 .. 127];
+	digito = ['0' .. '9'];
+	letra_min = ['a' .. 'z'];
+	letra_mai = ['A' .. 'Z'];
+	underscore = '_';
+	aspas_simples = ''';
+	lr = 10;
+	cr = 13;
+	ht = 09; // tab
+	allbutslash = [tudo-'/'];
+	allbutstar = [tudo-'*'];
+	allbutstarandslash = [tudo-['/'+'*']];
+	
+States
+	normal, 
+	comentario;
+
+Tokens
+
+	/* Palavras reservadas*/ 
+	{normal} avalie = 'avalie';
+	{normal} ate = 'ate';
+	{normal} booleano = 'booleano';
+	{normal} caractere = 'caractere';
+	{normal} caso = 'caso';
+	{normal} constante = 'const';
+	{normal} de = 'de';
+	{normal} enquanto = 'enquanto';
+	{normal} faca = 'faca';
+	{normal} falso = 'falso';
+	{normal} fim = 'fim.';
+	{normal} fim_avalie = 'fim avalie';
+	{normal} fim_enquanto = 'fim enquanto';
+	{normal} fim_para = 'fim para';
+	{normal} fim_se = 'fim se';
+	{normal} inicio = 'inicio';
+	{normal} inteiro = 'inteiro';
+	{normal} leia = 'leia';
+	{normal} para = 'para';
+	{normal} passo = 'passo';
+	{normal} programa = 'programa';
+	{normal} real = 'real';
+	{normal} repita = 'repita';
+	{normal} se = 'se';
+	{normal} senao = 'senao';
+	{normal} verdadeiro = 'verdadeiro';
+
+	
+	
+	/* Firulas */
+	{normal} abre_colchete = '[';
+	{normal} abre_paranteses = '(';
+	{normal} dois_pontos = ':';
+	{normal, comentario} enter = lr | cr;
+	{normal, comentario} espaco = ' ';
+	{normal} fecha_colchete = ']';
+	{normal} fecha_paranteses = ')';
+	{normal} ponto_virgula = ';';
+	{normal, comentario} tab = ht;
+	{normal} virgula = ',';
+
+	
+	/* Operadores Aritméticos*/
+	{normal} mais = '+';
+	{normal} menos = '-';
+	{normal} vezes = '*';
+	{normal} dividido = '/';
+	
+	/* Operadores Relacionais*/
+	{normal} atribuicao = ':=';
+	{normal} igualdade = '=';
+	{normal} diferenca = '<>';
+	{normal} maior_que = '>';
+	{normal} menor_que = '<';
+	{normal} maior_igual = '>=';
+	{normal} menor_igual = '<=';
+	
+	/* Operadores Booleanos */
+	{normal} nao = 'nao';
+	{normal} e = 'e';
+	{normal} ou = 'ou';
+	{normal} xor = 'xor';
+	 
+	/* Expressões regulares */
+	{normal} id = (underscore | letra_mai | letra_min) (letra_mai | letra_min | digito | underscore)*;
+	{normal} int = '-'?digito+;
+	{normal} float = '-'?digito+ ',' digito+;
+	{normal} char = aspas_simples [all-39] aspas_simples;
+	{normal} string = aspas_simples [all-39]* aspas_simples;
+
+	{normal} comentario_linha = '//' all*;
+	{normal -> comentario, comentario} comentario_bloco_abre = '/*';
+	{comentario} comentario_bloco_meio = allbutstarandslash*;
+	{comentario} comentario_star = '*';
+	{comentario} comentario_slash = '/';
+	{comentario} comentario_bloco_fecha = '*/';
+	
+//('*'allbutslash)*
+
+Ignored Tokens
+	comentario_linha,
+	comentario_bloco_abre,
+	comentario_bloco_fecha,
+	comentario_bloco_meio;
+	
