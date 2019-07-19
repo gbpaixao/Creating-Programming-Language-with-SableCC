@@ -1,0 +1,225 @@
+/* Análise léxica */
+
+Helpers
+	tudo = [0 .. 127];
+	all = [tudo - [10 + 13]];
+	digito = ['0' .. '9'];
+	letra_min = ['a' .. 'z'];
+	letra_mai = ['A' .. 'Z'];
+	underscore = '_';
+	aspas_simples = ''';
+	lr = 10;
+	cr = 13;
+	ht = 09; // tab
+	allbutslash = [tudo-'/'];
+	allbutstar = [tudo-'*'];
+	allbutstarandslash = [tudo-['/'+'*']];
+	
+States
+	normal, 
+	comentario;
+
+Tokens
+
+	/* Palavras reservadas*/ 
+	{normal} avalie = 'avalie';
+	{normal} ate = 'ate';
+	{normal} booleano = 'booleano';
+	{normal} caractere = 'caractere';
+	{normal} caso = 'caso';
+	{normal} constante = 'const';
+	{normal} de = 'de';
+	{normal} entao = 'entao';
+	{normal} enquanto = 'enquanto';
+	{normal} escreva = 'escreva';
+	{normal} faca = 'faca';
+	{normal} falso = 'falso';
+	{normal} fim = 'fim.';
+	{normal} fim_avalie = 'fim avalie';
+	{normal} fim_enquanto = 'fim enquanto';
+	{normal} fim_para = 'fim para';
+	{normal} fim_se = 'fim se';
+	{normal} inicio = 'inicio';
+	{normal} inteiro = 'inteiro';
+	{normal} leia = 'leia';
+	{normal} para = 'para';
+	{normal} passo = 'passo';
+	{normal} programa = 'programa';
+	{normal} real = 'real';
+	{normal} repita = 'repita';
+	{normal} se = 'se';
+	{normal} senao = 'senao';
+	{normal} verdadeiro = 'verdadeiro';
+
+	
+	
+	/* Firulas */
+	{normal} abre_colchete = '[';
+	{normal} abre_parenteses = '(';
+	{normal} dois_pontos = ':';
+	{normal} dois_pontos_igual = ':=';
+	{normal, comentario} enter = lr | cr;
+	{normal, comentario} espaco = ' ';
+	{normal} fecha_colchete = ']';
+	{normal} fecha_parenteses = ')';
+	{normal} ponto_virgula = ';';
+	{normal, comentario} tab = ht;
+	{normal} virgula = ',';
+
+	
+	/* Operadores Aritméticos*/
+	{normal} mais = '+';
+	{normal} menos = '-';
+	{normal} vezes = '*';
+	{normal} dividido = '/';
+	
+	/* Operadores Relacionais*/
+	{normal} atribuicao = ':=';
+	{normal} igualdade = '=';
+	{normal} diferenca = '<>';
+	{normal} maior_que = '>';
+	{normal} menor_que = '<';
+	{normal} maior_igual = '>=';
+	{normal} menor_igual = '<=';
+	
+	/* Operadores Booleanos */
+	{normal} nao = 'nao';
+	{normal} e = 'e';
+	{normal} ou = 'ou';
+	{normal} xor = 'xor';
+	 
+	/* Expressões regulares */
+	{normal} id = (underscore | letra_mai | letra_min) (letra_mai | letra_min | digito | underscore)*;
+	{normal} int = digito+;
+	{normal} float = digito+ ',' digito+;
+	{normal} char = aspas_simples [all-39] aspas_simples;
+	{normal} string = aspas_simples [all-39]* aspas_simples;
+
+	{normal} comentario_linha = '//' all*;
+	{normal -> comentario, comentario} comentario_bloco_abre = '/*';
+	{comentario} comentario_bloco_meio = allbutstarandslash*;
+	{comentario} comentario_star = '*';
+	{comentario} comentario_slash = '/';
+	{comentario, normal} comentario_bloco_fecha = '*/';
+	
+
+Ignored Tokens
+	espaco,
+	enter,
+	tab,
+	comentario_linha,
+	comentario_bloco_abre,
+	comentario_bloco_fecha,
+	comentario_bloco_meio;
+		
+Productions 
+	
+	// Produção inicial
+	start = programa id inicio decl_sequence cmd_sequence fim;
+	
+	declaracao = {var} tipo dois_pontos var_sequence ponto_virgula 
+			   | {const} constante id valor ponto_virgula;
+	
+	tipo = {float} real 
+		  |{int} inteiro 
+		  | {char} caractere;
+	
+	var = {id} id 
+	    | {vetor} id abre_colchete int fecha_colchete;
+	
+	valor = {string} string 
+		  | {int} int 
+		  | {float} float;
+
+	comando = {atribuicao} var dois_pontos_igual exp ponto_virgula
+			| {leia} leia abre_parenteses var_sequence fecha_parenteses ponto_virgula
+			| {escreva} escreva abre_parenteses exp_sequence fecha_parenteses ponto_virgula
+			| {se} se abre_parenteses exp_logica fecha_parenteses entao cmd_sequence fim_se ponto_virgula
+			| {se_else} se abre_parenteses exp_logica fecha_parenteses entao cmd_sequence if_else fim_se ponto_virgula
+			| {avalie} avalie abre_parenteses exp fecha_parenteses case_sequence fim_avalie ponto_virgula
+			| {avalie_else} avalie abre_parenteses exp fecha_parenteses case_sequence case_else fim_avalie ponto_virgula
+			| {enquanto} enquanto abre_parenteses exp_logica fecha_parenteses faca cmd_sequence fim_enquanto ponto_virgula
+			| {repita} repita cmd_sequence ate abre_parenteses exp_logica fecha_parenteses ponto_virgula
+			| {para} para var de int ate n_int faca cmd_sequence fim_para ponto_virgula
+			| {para_passo} para var de int passo n_int ate n_int1 faca cmd_sequence fim_para ponto_virgula;
+		  
+	/* EXP*/
+	
+	exp = {op_sum} exp op_sum termo 
+		| {termo} termo;
+	termo = {op_mult} termo op_mult fator
+		  | {fator} fator;
+	fator = {parenteses} abre_parenteses exp fecha_parenteses
+		  | {valor} valor 
+		  | {var} var 
+		  | {menos} menos fator;
+	
+	/* EXP-LÓGICA */
+
+	exp_logica = {ou} exp_logica ou termo1 
+			   | {termo1} termo1;	  
+	termo1 = {xor} termo1 xor termo2 
+		   | {termo2} termo2;
+	termo2 = {e} termo2 e elemento1 
+		   | {termo3} elemento1;
+	
+	// Chega nesse ponto ele tem que ir ou pro nao, ou pras exp_aux
+	elemento1 = {elem5} termo5 
+			  | {termo3} termo3;
+	
+	termo3 = {op_igual} termo7 op_igualdade termo7_aux 
+		   | {termo4} termo4;	
+	termo4 = {op_comp} termo7 op_comp termo7_aux;
+	termo7 = {exp_aux} exp_aux;
+		   
+	termo5 = {nao} nao termo5 
+		   | {termo6} termo6;
+	termo6 = {parenteses} abre_parenteses exp_logica fecha_parenteses;	
+		   
+		   	/* EXP-AUX */ 
+		   	// É praticamente uma cópia de EXP, mas esse serve para o exp_logica poder pegar 
+		   	// as operações de soma e multiplicação sem a ambiguidade do parenteses 
+	
+			exp_aux = {op_sum} exp_aux op_sum termo_aux 
+					| {termo} termo_aux;
+			termo_aux = {op_mult} termo_aux op_mult fator_aux
+				  | {fator} fator_aux;
+			fator_aux = {valor} valor 
+				  | {var} var 
+				  | {menos} menos fator_aux
+				  | {parenteses} abre_parenteses exp_aux fecha_parenteses;
+	
+	/* OPERADORES */
+	
+	op_sum = {mais} mais 
+		   | {menos} menos;
+	op_mult = {vezes} vezes 
+			| {dividido} dividido;
+	op_igualdade = {igualdade} igualdade 
+  				 | {diferenca} diferenca;
+	op_comp = {maior} maior_que 
+			| {menor} menor_que
+			| {maior_igual} maior_igual
+			| {menor_igual} menor_igual;
+	op_rel = {xor} xor
+		   | {e} e
+		   | {ou} ou;
+	
+	/* AUXILIARES */ 
+	if_else = senao cmd_sequence;
+	case = caso valor dois_pontos cmd_sequence;
+	case_else = senao dois_pontos cmd_sequence;
+	n_int = int;
+	n_int1 = int;
+	termo7_aux = termo7;
+	
+	decl_sequence = {dcl_sequence} decl_sequence declaracao
+				  | {decl} declaracao;
+	cmd_sequence = {cmd_sequence} cmd_sequence comando
+				 | {cmd} comando;
+	var_sequence = {var_sequence} var_sequence virgula var
+				 | {var} var;
+	exp_sequence = {sequence} exp_sequence virgula exp  
+				 | {exp} exp;
+	case_sequence = {options} case_sequence case
+	 	 		  | {case} case;  

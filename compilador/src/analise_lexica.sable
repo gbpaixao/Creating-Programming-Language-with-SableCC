@@ -3,7 +3,6 @@
 Helpers
 	tudo = [0 .. 127];
 	all = [tudo - [10 + 13]];
-	//allbutzero = [1 .. 127];
 	digito = ['0' .. '9'];
 	letra_min = ['a' .. 'z'];
 	letra_mai = ['A' .. 'Z'];
@@ -100,7 +99,6 @@ Tokens
 	{comentario} comentario_slash = '/';
 	{comentario, normal} comentario_bloco_fecha = '*/';
 	
-//('*'allbutslash)*
 
 Ignored Tokens
 	comentario_linha,
