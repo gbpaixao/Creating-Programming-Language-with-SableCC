@@ -7,9 +7,8 @@ import analysis.*;
 @SuppressWarnings("nls")
 public final class AOpSumExpAux extends PExpAux
 {
-    private PExpAux _expAux_;
-    private POpSum _opSum_;
-    private PTermoAux _termoAux_;
+    private PExpAux _left_;
+    private PExpAux _right_;
 
     public AOpSumExpAux()
     {
@@ -17,16 +16,13 @@ public final class AOpSumExpAux extends PExpAux
     }
 
     public AOpSumExpAux(
-        @SuppressWarnings("hiding") PExpAux _expAux_,
-        @SuppressWarnings("hiding") POpSum _opSum_,
-        @SuppressWarnings("hiding") PTermoAux _termoAux_)
+        @SuppressWarnings("hiding") PExpAux _left_,
+        @SuppressWarnings("hiding") PExpAux _right_)
     {
         // Constructor
-        setExpAux(_expAux_);
+        setLeft(_left_);
 
-        setOpSum(_opSum_);
-
-        setTermoAux(_termoAux_);
+        setRight(_right_);
 
     }
 
@@ -34,9 +30,8 @@ public final class AOpSumExpAux extends PExpAux
     public Object clone()
     {
         return new AOpSumExpAux(
-            cloneNode(this._expAux_),
-            cloneNode(this._opSum_),
-            cloneNode(this._termoAux_));
+            cloneNode(this._left_),
+            cloneNode(this._right_));
     }
 
     @Override
@@ -45,16 +40,16 @@ public final class AOpSumExpAux extends PExpAux
         ((Analysis) sw).caseAOpSumExpAux(this);
     }
 
-    public PExpAux getExpAux()
+    public PExpAux getLeft()
     {
-        return this._expAux_;
+        return this._left_;
     }
 
-    public void setExpAux(PExpAux node)
+    public void setLeft(PExpAux node)
     {
-        if(this._expAux_ != null)
+        if(this._left_ != null)
         {
-            this._expAux_.parent(null);
+            this._left_.parent(null);
         }
 
         if(node != null)
@@ -67,19 +62,19 @@ public final class AOpSumExpAux extends PExpAux
             node.parent(this);
         }
 
-        this._expAux_ = node;
+        this._left_ = node;
     }
 
-    public POpSum getOpSum()
+    public PExpAux getRight()
     {
-        return this._opSum_;
+        return this._right_;
     }
 
-    public void setOpSum(POpSum node)
+    public void setRight(PExpAux node)
     {
-        if(this._opSum_ != null)
+        if(this._right_ != null)
         {
-            this._opSum_.parent(null);
+            this._right_.parent(null);
         }
 
         if(node != null)
@@ -92,62 +87,30 @@ public final class AOpSumExpAux extends PExpAux
             node.parent(this);
         }
 
-        this._opSum_ = node;
-    }
-
-    public PTermoAux getTermoAux()
-    {
-        return this._termoAux_;
-    }
-
-    public void setTermoAux(PTermoAux node)
-    {
-        if(this._termoAux_ != null)
-        {
-            this._termoAux_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._termoAux_ = node;
+        this._right_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._expAux_)
-            + toString(this._opSum_)
-            + toString(this._termoAux_);
+            + toString(this._left_)
+            + toString(this._right_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._expAux_ == child)
+        if(this._left_ == child)
         {
-            this._expAux_ = null;
+            this._left_ = null;
             return;
         }
 
-        if(this._opSum_ == child)
+        if(this._right_ == child)
         {
-            this._opSum_ = null;
-            return;
-        }
-
-        if(this._termoAux_ == child)
-        {
-            this._termoAux_ = null;
+            this._right_ = null;
             return;
         }
 
@@ -158,21 +121,15 @@ public final class AOpSumExpAux extends PExpAux
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._expAux_ == oldChild)
+        if(this._left_ == oldChild)
         {
-            setExpAux((PExpAux) newChild);
+            setLeft((PExpAux) newChild);
             return;
         }
 
-        if(this._opSum_ == oldChild)
+        if(this._right_ == oldChild)
         {
-            setOpSum((POpSum) newChild);
-            return;
-        }
-
-        if(this._termoAux_ == oldChild)
-        {
-            setTermoAux((PTermoAux) newChild);
+            setRight((PExpAux) newChild);
             return;
         }
 

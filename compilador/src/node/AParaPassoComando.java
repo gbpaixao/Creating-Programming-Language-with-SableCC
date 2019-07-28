@@ -2,23 +2,17 @@
 
 package node;
 
+import java.util.*;
 import analysis.*;
 
 @SuppressWarnings("nls")
 public final class AParaPassoComando extends PComando
 {
-    private TPara _para_;
     private PVar _var_;
-    private TDe _de_;
-    private TInt _int_;
-    private TPasso _passo_;
-    private PNInt _nInt_;
-    private TAte _ate_;
-    private PNInt1 _nInt1_;
-    private TFaca _faca_;
-    private PCmdSequence _cmdSequence_;
-    private TFimPara _fimPara_;
-    private TPontoVirgula _pontoVirgula_;
+    private TInt _l_;
+    private TInt _m_;
+    private TInt _r_;
+    private final LinkedList<PComando> _comando_ = new LinkedList<PComando>();
 
     public AParaPassoComando()
     {
@@ -26,43 +20,22 @@ public final class AParaPassoComando extends PComando
     }
 
     public AParaPassoComando(
-        @SuppressWarnings("hiding") TPara _para_,
         @SuppressWarnings("hiding") PVar _var_,
-        @SuppressWarnings("hiding") TDe _de_,
-        @SuppressWarnings("hiding") TInt _int_,
-        @SuppressWarnings("hiding") TPasso _passo_,
-        @SuppressWarnings("hiding") PNInt _nInt_,
-        @SuppressWarnings("hiding") TAte _ate_,
-        @SuppressWarnings("hiding") PNInt1 _nInt1_,
-        @SuppressWarnings("hiding") TFaca _faca_,
-        @SuppressWarnings("hiding") PCmdSequence _cmdSequence_,
-        @SuppressWarnings("hiding") TFimPara _fimPara_,
-        @SuppressWarnings("hiding") TPontoVirgula _pontoVirgula_)
+        @SuppressWarnings("hiding") TInt _l_,
+        @SuppressWarnings("hiding") TInt _m_,
+        @SuppressWarnings("hiding") TInt _r_,
+        @SuppressWarnings("hiding") List<?> _comando_)
     {
         // Constructor
-        setPara(_para_);
-
         setVar(_var_);
 
-        setDe(_de_);
+        setL(_l_);
 
-        setInt(_int_);
+        setM(_m_);
 
-        setPasso(_passo_);
+        setR(_r_);
 
-        setNInt(_nInt_);
-
-        setAte(_ate_);
-
-        setNInt1(_nInt1_);
-
-        setFaca(_faca_);
-
-        setCmdSequence(_cmdSequence_);
-
-        setFimPara(_fimPara_);
-
-        setPontoVirgula(_pontoVirgula_);
+        setComando(_comando_);
 
     }
 
@@ -70,49 +43,17 @@ public final class AParaPassoComando extends PComando
     public Object clone()
     {
         return new AParaPassoComando(
-            cloneNode(this._para_),
             cloneNode(this._var_),
-            cloneNode(this._de_),
-            cloneNode(this._int_),
-            cloneNode(this._passo_),
-            cloneNode(this._nInt_),
-            cloneNode(this._ate_),
-            cloneNode(this._nInt1_),
-            cloneNode(this._faca_),
-            cloneNode(this._cmdSequence_),
-            cloneNode(this._fimPara_),
-            cloneNode(this._pontoVirgula_));
+            cloneNode(this._l_),
+            cloneNode(this._m_),
+            cloneNode(this._r_),
+            cloneList(this._comando_));
     }
 
     @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAParaPassoComando(this);
-    }
-
-    public TPara getPara()
-    {
-        return this._para_;
-    }
-
-    public void setPara(TPara node)
-    {
-        if(this._para_ != null)
-        {
-            this._para_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._para_ = node;
     }
 
     public PVar getVar()
@@ -140,16 +81,16 @@ public final class AParaPassoComando extends PComando
         this._var_ = node;
     }
 
-    public TDe getDe()
+    public TInt getL()
     {
-        return this._de_;
+        return this._l_;
     }
 
-    public void setDe(TDe node)
+    public void setL(TInt node)
     {
-        if(this._de_ != null)
+        if(this._l_ != null)
         {
-            this._de_.parent(null);
+            this._l_.parent(null);
         }
 
         if(node != null)
@@ -162,19 +103,19 @@ public final class AParaPassoComando extends PComando
             node.parent(this);
         }
 
-        this._de_ = node;
+        this._l_ = node;
     }
 
-    public TInt getInt()
+    public TInt getM()
     {
-        return this._int_;
+        return this._m_;
     }
 
-    public void setInt(TInt node)
+    public void setM(TInt node)
     {
-        if(this._int_ != null)
+        if(this._m_ != null)
         {
-            this._int_.parent(null);
+            this._m_.parent(null);
         }
 
         if(node != null)
@@ -187,19 +128,19 @@ public final class AParaPassoComando extends PComando
             node.parent(this);
         }
 
-        this._int_ = node;
+        this._m_ = node;
     }
 
-    public TPasso getPasso()
+    public TInt getR()
     {
-        return this._passo_;
+        return this._r_;
     }
 
-    public void setPasso(TPasso node)
+    public void setR(TInt node)
     {
-        if(this._passo_ != null)
+        if(this._r_ != null)
         {
-            this._passo_.parent(null);
+            this._r_.parent(null);
         }
 
         if(node != null)
@@ -212,275 +153,76 @@ public final class AParaPassoComando extends PComando
             node.parent(this);
         }
 
-        this._passo_ = node;
+        this._r_ = node;
     }
 
-    public PNInt getNInt()
+    public LinkedList<PComando> getComando()
     {
-        return this._nInt_;
+        return this._comando_;
     }
 
-    public void setNInt(PNInt node)
+    public void setComando(List<?> list)
     {
-        if(this._nInt_ != null)
+        for(PComando e : this._comando_)
         {
-            this._nInt_.parent(null);
+            e.parent(null);
         }
+        this._comando_.clear();
 
-        if(node != null)
+        for(Object obj_e : list)
         {
-            if(node.parent() != null)
+            PComando e = (PComando) obj_e;
+            if(e.parent() != null)
             {
-                node.parent().removeChild(node);
+                e.parent().removeChild(e);
             }
 
-            node.parent(this);
+            e.parent(this);
+            this._comando_.add(e);
         }
-
-        this._nInt_ = node;
-    }
-
-    public TAte getAte()
-    {
-        return this._ate_;
-    }
-
-    public void setAte(TAte node)
-    {
-        if(this._ate_ != null)
-        {
-            this._ate_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._ate_ = node;
-    }
-
-    public PNInt1 getNInt1()
-    {
-        return this._nInt1_;
-    }
-
-    public void setNInt1(PNInt1 node)
-    {
-        if(this._nInt1_ != null)
-        {
-            this._nInt1_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._nInt1_ = node;
-    }
-
-    public TFaca getFaca()
-    {
-        return this._faca_;
-    }
-
-    public void setFaca(TFaca node)
-    {
-        if(this._faca_ != null)
-        {
-            this._faca_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._faca_ = node;
-    }
-
-    public PCmdSequence getCmdSequence()
-    {
-        return this._cmdSequence_;
-    }
-
-    public void setCmdSequence(PCmdSequence node)
-    {
-        if(this._cmdSequence_ != null)
-        {
-            this._cmdSequence_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._cmdSequence_ = node;
-    }
-
-    public TFimPara getFimPara()
-    {
-        return this._fimPara_;
-    }
-
-    public void setFimPara(TFimPara node)
-    {
-        if(this._fimPara_ != null)
-        {
-            this._fimPara_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._fimPara_ = node;
-    }
-
-    public TPontoVirgula getPontoVirgula()
-    {
-        return this._pontoVirgula_;
-    }
-
-    public void setPontoVirgula(TPontoVirgula node)
-    {
-        if(this._pontoVirgula_ != null)
-        {
-            this._pontoVirgula_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._pontoVirgula_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._para_)
             + toString(this._var_)
-            + toString(this._de_)
-            + toString(this._int_)
-            + toString(this._passo_)
-            + toString(this._nInt_)
-            + toString(this._ate_)
-            + toString(this._nInt1_)
-            + toString(this._faca_)
-            + toString(this._cmdSequence_)
-            + toString(this._fimPara_)
-            + toString(this._pontoVirgula_);
+            + toString(this._l_)
+            + toString(this._m_)
+            + toString(this._r_)
+            + toString(this._comando_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._para_ == child)
-        {
-            this._para_ = null;
-            return;
-        }
-
         if(this._var_ == child)
         {
             this._var_ = null;
             return;
         }
 
-        if(this._de_ == child)
+        if(this._l_ == child)
         {
-            this._de_ = null;
+            this._l_ = null;
             return;
         }
 
-        if(this._int_ == child)
+        if(this._m_ == child)
         {
-            this._int_ = null;
+            this._m_ = null;
             return;
         }
 
-        if(this._passo_ == child)
+        if(this._r_ == child)
         {
-            this._passo_ = null;
+            this._r_ = null;
             return;
         }
 
-        if(this._nInt_ == child)
+        if(this._comando_.remove(child))
         {
-            this._nInt_ = null;
-            return;
-        }
-
-        if(this._ate_ == child)
-        {
-            this._ate_ = null;
-            return;
-        }
-
-        if(this._nInt1_ == child)
-        {
-            this._nInt1_ = null;
-            return;
-        }
-
-        if(this._faca_ == child)
-        {
-            this._faca_ = null;
-            return;
-        }
-
-        if(this._cmdSequence_ == child)
-        {
-            this._cmdSequence_ = null;
-            return;
-        }
-
-        if(this._fimPara_ == child)
-        {
-            this._fimPara_ = null;
-            return;
-        }
-
-        if(this._pontoVirgula_ == child)
-        {
-            this._pontoVirgula_ = null;
             return;
         }
 
@@ -491,76 +233,46 @@ public final class AParaPassoComando extends PComando
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._para_ == oldChild)
-        {
-            setPara((TPara) newChild);
-            return;
-        }
-
         if(this._var_ == oldChild)
         {
             setVar((PVar) newChild);
             return;
         }
 
-        if(this._de_ == oldChild)
+        if(this._l_ == oldChild)
         {
-            setDe((TDe) newChild);
+            setL((TInt) newChild);
             return;
         }
 
-        if(this._int_ == oldChild)
+        if(this._m_ == oldChild)
         {
-            setInt((TInt) newChild);
+            setM((TInt) newChild);
             return;
         }
 
-        if(this._passo_ == oldChild)
+        if(this._r_ == oldChild)
         {
-            setPasso((TPasso) newChild);
+            setR((TInt) newChild);
             return;
         }
 
-        if(this._nInt_ == oldChild)
+        for(ListIterator<PComando> i = this._comando_.listIterator(); i.hasNext();)
         {
-            setNInt((PNInt) newChild);
-            return;
-        }
+            if(i.next() == oldChild)
+            {
+                if(newChild != null)
+                {
+                    i.set((PComando) newChild);
+                    newChild.parent(this);
+                    oldChild.parent(null);
+                    return;
+                }
 
-        if(this._ate_ == oldChild)
-        {
-            setAte((TAte) newChild);
-            return;
-        }
-
-        if(this._nInt1_ == oldChild)
-        {
-            setNInt1((PNInt1) newChild);
-            return;
-        }
-
-        if(this._faca_ == oldChild)
-        {
-            setFaca((TFaca) newChild);
-            return;
-        }
-
-        if(this._cmdSequence_ == oldChild)
-        {
-            setCmdSequence((PCmdSequence) newChild);
-            return;
-        }
-
-        if(this._fimPara_ == oldChild)
-        {
-            setFimPara((TFimPara) newChild);
-            return;
-        }
-
-        if(this._pontoVirgula_ == oldChild)
-        {
-            setPontoVirgula((TPontoVirgula) newChild);
-            return;
+                i.remove();
+                oldChild.parent(null);
+                return;
+            }
         }
 
         throw new RuntimeException("Not a child.");

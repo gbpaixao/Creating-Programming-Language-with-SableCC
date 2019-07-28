@@ -115,111 +115,173 @@ Ignored Tokens
 Productions 
 	
 	// Produção inicial
-	start = programa id inicio decl_sequence cmd_sequence fim;
-	
-	declaracao = {var} tipo dois_pontos var_sequence ponto_virgula 
-			   | {const} constante id valor ponto_virgula;
-	
-	tipo = {float} real 
-		  |{int} inteiro 
-		  | {char} caractere;
-	
-	var = {id} id 
-	    | {vetor} id abre_colchete int fecha_colchete;
-	
-	valor = {string} string 
-		  | {int} int 
-		  | {float} float;
+	start {-> P.start} = {start} programa id inicio [decseq]:decl_sequence [cmdseq]:cmd_sequence fim {-> New start (id, [decseq.declaracao], [cmdseq.comando])};
 
-	comando = {atribuicao} var dois_pontos_igual exp ponto_virgula
-			| {leia} leia abre_parenteses var_sequence fecha_parenteses ponto_virgula
-			| {escreva} escreva abre_parenteses exp_sequence fecha_parenteses ponto_virgula
-			| {se} se abre_parenteses exp_logica fecha_parenteses entao cmd_sequence fim_se ponto_virgula
-			| {se_else} se abre_parenteses exp_logica fecha_parenteses entao cmd_sequence if_else fim_se ponto_virgula
-			| {avalie} avalie abre_parenteses exp fecha_parenteses case_sequence fim_avalie ponto_virgula
-			| {avalie_else} avalie abre_parenteses exp fecha_parenteses case_sequence case_else fim_avalie ponto_virgula
-			| {enquanto} enquanto abre_parenteses exp_logica fecha_parenteses faca cmd_sequence fim_enquanto ponto_virgula
-			| {repita} repita cmd_sequence ate abre_parenteses exp_logica fecha_parenteses ponto_virgula
-			| {para} para var de int ate n_int faca cmd_sequence fim_para ponto_virgula
-			| {para_passo} para var de int passo n_int ate n_int1 faca cmd_sequence fim_para ponto_virgula;
-		  
+	decl_sequence {-> P.declaracao*} = {dcl_sequence} decl_sequence declaracao {-> [decl_sequence.declaracao, declaracao]}
+				  | {decl} declaracao {-> [declaracao]};
+		
+	declaracao {-> P.declaracao} = {var} tipo dois_pontos [varseq]:var_sequence ponto_virgula {-> New declaracao.var (tipo, [varseq.var])}
+		   	   | {const} constante id valor ponto_virgula {-> New declaracao.const (id, valor)};
+
+	
+	tipo {-> P.tipo} = {float} real {-> New tipo.float (real)}
+		  |{int} inteiro {-> New tipo.int (inteiro)}
+		  | {char} caractere {-> New tipo.char (caractere)}; 
+	
+	var {-> P.var} = {id} id {-> New var.id (id)} 
+	    | {vetor} id abre_colchete int fecha_colchete {-> New var.vetor (id, int)};
+	
+	var_sequence {-> P.var*} = {var_sequence} var_sequence virgula var {-> [var_sequence.var, var]}
+				 | {var} var {-> [var]};
+	
+	valor {-> P.valor} = {string} string {-> New valor.string (string)} 
+		  | {int} int {-> New valor.int (int)}
+		  | {float} float {-> New valor.float (float)};
+
+	comando {-> P.comando} = {atribuicao} var dois_pontos_igual exp ponto_virgula {-> New comando.atribuicao (var, exp)}
+			| {leia} leia abre_parenteses var_sequence fecha_parenteses ponto_virgula {-> New comando.leia ([var_sequence.var])}
+			| {escreva} escreva abre_parenteses exp_sequence fecha_parenteses ponto_virgula {-> New comando.escreva ([exp_sequence.exp])}
+			| {se} se abre_parenteses exp_logica fecha_parenteses entao cmd_sequence fim_se ponto_virgula {-> New comando.se (exp_logica, [cmd_sequence.comando])} 
+			| {se_else} se abre_parenteses exp_logica fecha_parenteses entao cmd_sequence if_else fim_se ponto_virgula {-> New comando.se_else (exp_logica, [cmd_sequence.comando], if_else)} 
+			| {avalie} avalie abre_parenteses exp fecha_parenteses case_sequence fim_avalie ponto_virgula  {-> New comando.avalie (exp, [case_sequence.case])} 
+			| {avalie_else} avalie abre_parenteses exp fecha_parenteses case_sequence case_else fim_avalie ponto_virgula {-> New comando.avalie_else (exp, [case_sequence.case], case_else)} 
+			| {enquanto} enquanto abre_parenteses exp_logica fecha_parenteses faca cmd_sequence fim_enquanto ponto_virgula {-> New comando.enquanto (exp_logica, [cmd_sequence.comando])} 
+			| {repita} repita cmd_sequence ate abre_parenteses exp_logica fecha_parenteses ponto_virgula {-> New comando.repita ([cmd_sequence.comando], exp_logica)} 
+			| {para} para var de [int1]:int ate [int2]:int faca cmd_sequence fim_para ponto_virgula {-> New comando.para (var, int1, int2, [cmd_sequence.comando])}
+			| {para_passo} para var de [int1]:int passo [int2]:int ate [int3]:int faca cmd_sequence fim_para ponto_virgula {-> New comando.para_passo (var, int1, int2, int3, [cmd_sequence.comando])};
+	
+	cmd_sequence {-> P.comando*} = {cmd_sequence} cmd_sequence comando {-> [cmd_sequence.comando, comando]}
+				 | {cmd} comando {-> [comando]};
+
+	// If	 	 		  
+	if_else {-> P.if_else} = senao cmd_sequence {-> New if_else ([cmd_sequence.comando])};
+	
+	// Case
+	case {-> P.case} = caso valor dois_pontos cmd_sequence {-> New case (valor, [cmd_sequence.comando])};
+	
+	case_sequence {-> P.case*} = {options} case_sequence case {-> [case_sequence.case, case]}
+	 	 		  | {case} case {-> [case]};  
+	
+	case_else {-> P.case_else} = senao dois_pontos cmd_sequence {-> New case_else ([cmd_sequence.comando])};
+	
 	/* EXP*/
 	
-	exp = {op_sum} exp op_sum termo 
-		| {termo} termo;
-	termo = {op_mult} termo op_mult fator
-		  | {fator} fator;
-	fator = {parenteses} abre_parenteses exp fecha_parenteses
-		  | {valor} valor 
-		  | {var} var 
-		  | {menos} menos fator;
+	exp {-> P.exp} = {op_sum} exp mais termo {-> New exp.op_sum (exp, termo.exp)}
+		| {op_sub} exp menos termo {-> New exp.op_sub (exp, termo.exp)}
+		| {termo} termo {-> termo.exp};
+	termo {-> P.exp} = {op_mult} [l]:termo vezes [r]:fator {-> New exp.op_mult (l.exp, r.exp)}
+		  | {op_div} [l]:termo dividido [r]:fator {-> New exp.op_div (l.exp, r.exp)}
+		  | {fator} fator {-> fator.exp};
+	fator {-> P.exp} = {parenteses} abre_parenteses exp fecha_parenteses {-> New exp.parenteses (exp)}
+		  | {valor} valor {-> New exp.valor (valor)}
+		  | {var} var {-> New exp.var (var)}
+		  | {menos} menos [l]:fator {-> New exp.menos (l.exp)};
+	
+	exp_sequence {-> P.exp*}= {sequence} exp_sequence virgula exp  {-> [exp_sequence.exp, exp]}
+				 | {exp} exp {-> [exp]};
 	
 	/* EXP-LÓGICA */
 
-	exp_logica = {ou} exp_logica ou termo1 
-			   | {termo1} termo1;	  
-	termo1 = {xor} termo1 xor termo2 
-		   | {termo2} termo2;
-	termo2 = {e} termo2 e elemento1 
-		   | {termo3} elemento1;
-	
-	// Chega nesse ponto ele tem que ir ou pro nao, ou pras exp_aux
-	elemento1 = {elem5} termo5 
-			  | {termo3} termo3;
-	
-	termo3 = {op_igual} termo7 op_igualdade termo7_aux 
-		   | {termo4} termo4;	
-	termo4 = {op_comp} termo7 op_comp termo7_aux;
-	termo7 = {exp_aux} exp_aux;
+	exp_logica {-> P.exp_logica} = {ou} exp_logica ou termo1 {-> New exp_logica.ou (exp_logica, termo1.exp_logica)}
+			   | {termo1} termo1 {-> termo1.exp_logica};	  
+	termo1 {-> P.exp_logica} = {xor} [l]:termo1 xor [r]:termo2 {-> New exp_logica.xor (l.exp_logica, r.exp_logica)}
+		   | {termo2} termo2 {-> termo2.exp_logica};
+	termo2 {-> P.exp_logica} = {e} [l]:termo2 e [r]:elemento1 {-> New exp_logica.e (l.exp_logica, r.exp_logica)}
+		   | {termo3} elemento1 {-> elemento1.exp_logica};
 		   
-	termo5 = {nao} nao termo5 
-		   | {termo6} termo6;
-	termo6 = {parenteses} abre_parenteses exp_logica fecha_parenteses;	
+	// Chega nesse ponto ele tem que ir ou pro nao, ou pras exp_aux
+	elemento1 {-> P.exp_logica} = {termo5} termo5 {-> termo5.exp_logica}
+		   | {termo3} termo3 {-> termo3.exp_logica};
+	
+	termo5 {-> P.exp_logica} = {nao} nao [r]:termo5 {-> New exp_logica.nao (r.exp_logica)}
+		   | {termo6} termo6 {-> termo6.exp_logica};
+	termo6 {-> P.exp_logica} = {parenteses} abre_parenteses [r]:exp_logica fecha_parenteses {-> New exp_logica.parenteses (r.exp_logica)};	
+	
+	
+	termo3 {-> P.exp_logica} = {op_igual} [l]:exp_aux igualdade [r]:exp_aux {-> New exp_logica.op_igual (l.exp_aux, r.exp_aux)}
+		   | {op_dif} [l]:exp_aux diferenca [r]:exp_aux {-> New exp_logica.op_dif (l.exp_aux, r.exp_aux)}
+		   | {termo4} termo4 {-> termo4.exp_logica};	
+	termo4 {-> P.exp_logica} = {op_maior} [l]:exp_aux maior_que [r]:exp_aux {-> New exp_logica.op_maior (l.exp_aux, r.exp_aux)}
+		   | {op_menor} [l]:exp_aux menor_que [r]:exp_aux {-> New exp_logica.op_menor (l.exp_aux, r.exp_aux)}
+		   | {op_maior_igual} [l]:exp_aux maior_igual [r]:exp_aux {-> New exp_logica.op_maior_igual (l.exp_aux, r.exp_aux)}
+		   | {op_menor_igual} [l]:exp_aux menor_igual [r]:exp_aux {-> New exp_logica.op_menor_igual (l.exp_aux, r.exp_aux)};
 		   
 		   	/* EXP-AUX */ 
 		   	// É praticamente uma cópia de EXP, mas esse serve para o exp_logica poder pegar 
 		   	// as operações de soma e multiplicação sem a ambiguidade do parenteses 
 	
-			exp_aux = {op_sum} exp_aux op_sum termo_aux 
-					| {termo} termo_aux;
-			termo_aux = {op_mult} termo_aux op_mult fator_aux
-				  | {fator} fator_aux;
-			fator_aux = {valor} valor 
-				  | {var} var 
-				  | {menos} menos fator_aux
-				  | {parenteses} abre_parenteses exp_aux fecha_parenteses;
+			exp_aux {-> P.exp_aux} = {op_sum} exp_aux mais termo_aux {-> New exp_aux.op_sum (exp_aux, termo_aux.exp_aux)}
+					| {op_sub} exp_aux menos termo_aux {-> New exp_aux.op_sub (exp_aux, termo_aux.exp_aux)}
+					| {termo} termo_aux {-> termo_aux.exp_aux};
+			termo_aux {-> P.exp_aux} = {op_mult} [l]:termo_aux vezes [r]:fator_aux {-> New exp_aux.op_mult (l.exp_aux, r.exp_aux)}
+				  | {op_div} [l]:termo_aux dividido [r]:fator_aux {-> New exp_aux.op_div (l.exp_aux, r.exp_aux)}
+				  | {fator} fator_aux {-> fator_aux.exp_aux};
+			fator_aux {-> P.exp_aux} = {valor} valor {-> New exp_aux.valor (valor)}
+				  | {var} var {-> New exp_aux.var (var)}
+				  | {menos} menos fator_aux {-> New exp_aux.menos (fator_aux.exp_aux)}
+				  | {parenteses} abre_parenteses exp_aux fecha_parenteses {-> New exp_aux.parenteses (exp_aux.exp_aux)};
+
+	 	 		  
+Abstract Syntax Tree
+    start = id declaracao* comando*;
+ 	
+ 	declaracao = {var} tipo var* |
+				 {const} id valor;
 	
-	/* OPERADORES */
-	
-	op_sum = {mais} mais 
-		   | {menos} menos;
-	op_mult = {vezes} vezes 
-			| {dividido} dividido;
-	op_igualdade = {igualdade} igualdade 
-  				 | {diferenca} diferenca;
-	op_comp = {maior} maior_que 
-			| {menor} menor_que
-			| {maior_igual} maior_igual
-			| {menor_igual} menor_igual;
-	op_rel = {xor} xor
-		   | {e} e
-		   | {ou} ou;
-	
-	/* AUXILIARES */ 
-	if_else = senao cmd_sequence;
-	case = caso valor dois_pontos cmd_sequence;
-	case_else = senao dois_pontos cmd_sequence;
-	n_int = int;
-	n_int1 = int;
-	termo7_aux = termo7;
-	
-	decl_sequence = {dcl_sequence} decl_sequence declaracao
-				  | {decl} declaracao;
-	cmd_sequence = {cmd_sequence} cmd_sequence comando
-				 | {cmd} comando;
-	var_sequence = {var_sequence} var_sequence virgula var
-				 | {var} var;
-	exp_sequence = {sequence} exp_sequence virgula exp  
-				 | {exp} exp;
-	case_sequence = {options} case_sequence case
-	 	 		  | {case} case;  
+	tipo = {float} real | 
+	       {int} inteiro | 
+	       {char} caractere;
+	       
+	var = {id} id | 
+      	  {vetor} id int;
+
+    valor = {string} string | 
+     		{int} int | 
+     		{float} float;       
+ 	
+    comando = {atribuicao} var exp |
+    		  {leia} var* |
+    		  {escreva} exp* |
+    		  {se} exp_logica comando* |
+    		  {se_else} exp_logica comando* if_else | 
+    		  {avalie} exp case* |
+    		  {avalie_else} exp case* case_else |
+    		  {enquanto} exp_logica comando* | 
+    		  {repita} comando* exp_logica |
+    		  {para} var [l]:int [r]:int comando* |
+    		  {para_passo} var [l]:int [m]:int [r]:int comando*;
+    
+    if_else = comando*;
+    case = valor comando*;
+    case_else = comando*;
+    
+    exp = {valor} valor
+    	| {var} var
+    	| {parenteses} exp
+    	| {menos} exp
+    	| {op_sum} [left]:exp [right]:exp
+    	| {op_sub} [left]:exp [right]:exp
+    	| {op_mult} [left]:exp [right]:exp
+    	| {op_div} [left]:exp [right]:exp;
+    
+    exp_logica = {parenteses} exp_logica
+    		   | {op_igual} [left]:exp_aux [right]:exp_aux
+    		   | {op_dif} [left]:exp_aux [right]:exp_aux
+    		   | {op_maior} [left]:exp_aux [right]:exp_aux
+    		   | {op_menor} [left]:exp_aux [right]:exp_aux
+    		   | {op_maior_igual} [left]:exp_aux [right]:exp_aux
+    		   | {op_menor_igual} [left]:exp_aux [right]:exp_aux
+    		   | {nao} exp_logica
+    		   | {e} [left]:exp_logica [right]:exp_logica
+    		   | {ou} [left]:exp_logica [right]:exp_logica 
+    		   | {xor} [left]:exp_logica [right]:exp_logica;
+    
+    exp_aux = {valor} valor
+    	| {var} var
+    	| {parenteses} exp_aux
+    	| {menos} exp_aux
+    	| {op_sum} [left]:exp_aux [right]:exp_aux
+    	| {op_sub} [left]:exp_aux [right]:exp_aux
+    	| {op_mult} [left]:exp_aux [right]:exp_aux
+    	| {op_div} [left]:exp_aux [right]:exp_aux;
+    

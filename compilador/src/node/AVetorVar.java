@@ -8,9 +8,7 @@ import analysis.*;
 public final class AVetorVar extends PVar
 {
     private TId _id_;
-    private TAbreColchete _abreColchete_;
     private TInt _int_;
-    private TFechaColchete _fechaColchete_;
 
     public AVetorVar()
     {
@@ -19,18 +17,12 @@ public final class AVetorVar extends PVar
 
     public AVetorVar(
         @SuppressWarnings("hiding") TId _id_,
-        @SuppressWarnings("hiding") TAbreColchete _abreColchete_,
-        @SuppressWarnings("hiding") TInt _int_,
-        @SuppressWarnings("hiding") TFechaColchete _fechaColchete_)
+        @SuppressWarnings("hiding") TInt _int_)
     {
         // Constructor
         setId(_id_);
 
-        setAbreColchete(_abreColchete_);
-
         setInt(_int_);
-
-        setFechaColchete(_fechaColchete_);
 
     }
 
@@ -39,9 +31,7 @@ public final class AVetorVar extends PVar
     {
         return new AVetorVar(
             cloneNode(this._id_),
-            cloneNode(this._abreColchete_),
-            cloneNode(this._int_),
-            cloneNode(this._fechaColchete_));
+            cloneNode(this._int_));
     }
 
     @Override
@@ -75,31 +65,6 @@ public final class AVetorVar extends PVar
         this._id_ = node;
     }
 
-    public TAbreColchete getAbreColchete()
-    {
-        return this._abreColchete_;
-    }
-
-    public void setAbreColchete(TAbreColchete node)
-    {
-        if(this._abreColchete_ != null)
-        {
-            this._abreColchete_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._abreColchete_ = node;
-    }
-
     public TInt getInt()
     {
         return this._int_;
@@ -125,39 +90,12 @@ public final class AVetorVar extends PVar
         this._int_ = node;
     }
 
-    public TFechaColchete getFechaColchete()
-    {
-        return this._fechaColchete_;
-    }
-
-    public void setFechaColchete(TFechaColchete node)
-    {
-        if(this._fechaColchete_ != null)
-        {
-            this._fechaColchete_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._fechaColchete_ = node;
-    }
-
     @Override
     public String toString()
     {
         return ""
             + toString(this._id_)
-            + toString(this._abreColchete_)
-            + toString(this._int_)
-            + toString(this._fechaColchete_);
+            + toString(this._int_);
     }
 
     @Override
@@ -170,21 +108,9 @@ public final class AVetorVar extends PVar
             return;
         }
 
-        if(this._abreColchete_ == child)
-        {
-            this._abreColchete_ = null;
-            return;
-        }
-
         if(this._int_ == child)
         {
             this._int_ = null;
-            return;
-        }
-
-        if(this._fechaColchete_ == child)
-        {
-            this._fechaColchete_ = null;
             return;
         }
 
@@ -201,21 +127,9 @@ public final class AVetorVar extends PVar
             return;
         }
 
-        if(this._abreColchete_ == oldChild)
-        {
-            setAbreColchete((TAbreColchete) newChild);
-            return;
-        }
-
         if(this._int_ == oldChild)
         {
             setInt((TInt) newChild);
-            return;
-        }
-
-        if(this._fechaColchete_ == oldChild)
-        {
-            setFechaColchete((TFechaColchete) newChild);
             return;
         }
 

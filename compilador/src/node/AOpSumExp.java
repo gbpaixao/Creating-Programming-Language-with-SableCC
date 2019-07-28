@@ -7,9 +7,8 @@ import analysis.*;
 @SuppressWarnings("nls")
 public final class AOpSumExp extends PExp
 {
-    private PExp _exp_;
-    private POpSum _opSum_;
-    private PTermo _termo_;
+    private PExp _left_;
+    private PExp _right_;
 
     public AOpSumExp()
     {
@@ -17,16 +16,13 @@ public final class AOpSumExp extends PExp
     }
 
     public AOpSumExp(
-        @SuppressWarnings("hiding") PExp _exp_,
-        @SuppressWarnings("hiding") POpSum _opSum_,
-        @SuppressWarnings("hiding") PTermo _termo_)
+        @SuppressWarnings("hiding") PExp _left_,
+        @SuppressWarnings("hiding") PExp _right_)
     {
         // Constructor
-        setExp(_exp_);
+        setLeft(_left_);
 
-        setOpSum(_opSum_);
-
-        setTermo(_termo_);
+        setRight(_right_);
 
     }
 
@@ -34,9 +30,8 @@ public final class AOpSumExp extends PExp
     public Object clone()
     {
         return new AOpSumExp(
-            cloneNode(this._exp_),
-            cloneNode(this._opSum_),
-            cloneNode(this._termo_));
+            cloneNode(this._left_),
+            cloneNode(this._right_));
     }
 
     @Override
@@ -45,16 +40,16 @@ public final class AOpSumExp extends PExp
         ((Analysis) sw).caseAOpSumExp(this);
     }
 
-    public PExp getExp()
+    public PExp getLeft()
     {
-        return this._exp_;
+        return this._left_;
     }
 
-    public void setExp(PExp node)
+    public void setLeft(PExp node)
     {
-        if(this._exp_ != null)
+        if(this._left_ != null)
         {
-            this._exp_.parent(null);
+            this._left_.parent(null);
         }
 
         if(node != null)
@@ -67,19 +62,19 @@ public final class AOpSumExp extends PExp
             node.parent(this);
         }
 
-        this._exp_ = node;
+        this._left_ = node;
     }
 
-    public POpSum getOpSum()
+    public PExp getRight()
     {
-        return this._opSum_;
+        return this._right_;
     }
 
-    public void setOpSum(POpSum node)
+    public void setRight(PExp node)
     {
-        if(this._opSum_ != null)
+        if(this._right_ != null)
         {
-            this._opSum_.parent(null);
+            this._right_.parent(null);
         }
 
         if(node != null)
@@ -92,62 +87,30 @@ public final class AOpSumExp extends PExp
             node.parent(this);
         }
 
-        this._opSum_ = node;
-    }
-
-    public PTermo getTermo()
-    {
-        return this._termo_;
-    }
-
-    public void setTermo(PTermo node)
-    {
-        if(this._termo_ != null)
-        {
-            this._termo_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._termo_ = node;
+        this._right_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._exp_)
-            + toString(this._opSum_)
-            + toString(this._termo_);
+            + toString(this._left_)
+            + toString(this._right_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._exp_ == child)
+        if(this._left_ == child)
         {
-            this._exp_ = null;
+            this._left_ = null;
             return;
         }
 
-        if(this._opSum_ == child)
+        if(this._right_ == child)
         {
-            this._opSum_ = null;
-            return;
-        }
-
-        if(this._termo_ == child)
-        {
-            this._termo_ = null;
+            this._right_ = null;
             return;
         }
 
@@ -158,21 +121,15 @@ public final class AOpSumExp extends PExp
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._exp_ == oldChild)
+        if(this._left_ == oldChild)
         {
-            setExp((PExp) newChild);
+            setLeft((PExp) newChild);
             return;
         }
 
-        if(this._opSum_ == oldChild)
+        if(this._right_ == oldChild)
         {
-            setOpSum((POpSum) newChild);
-            return;
-        }
-
-        if(this._termo_ == oldChild)
-        {
-            setTermo((PTermo) newChild);
+            setRight((PExp) newChild);
             return;
         }
 

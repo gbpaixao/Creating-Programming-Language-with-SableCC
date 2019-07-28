@@ -2,15 +2,14 @@
 
 package node;
 
+import java.util.*;
 import analysis.*;
 
 @SuppressWarnings("nls")
 public final class AVarDeclaracao extends PDeclaracao
 {
     private PTipo _tipo_;
-    private TDoisPontos _doisPontos_;
-    private PVarSequence _varSequence_;
-    private TPontoVirgula _pontoVirgula_;
+    private final LinkedList<PVar> _var_ = new LinkedList<PVar>();
 
     public AVarDeclaracao()
     {
@@ -19,18 +18,12 @@ public final class AVarDeclaracao extends PDeclaracao
 
     public AVarDeclaracao(
         @SuppressWarnings("hiding") PTipo _tipo_,
-        @SuppressWarnings("hiding") TDoisPontos _doisPontos_,
-        @SuppressWarnings("hiding") PVarSequence _varSequence_,
-        @SuppressWarnings("hiding") TPontoVirgula _pontoVirgula_)
+        @SuppressWarnings("hiding") List<?> _var_)
     {
         // Constructor
         setTipo(_tipo_);
 
-        setDoisPontos(_doisPontos_);
-
-        setVarSequence(_varSequence_);
-
-        setPontoVirgula(_pontoVirgula_);
+        setVar(_var_);
 
     }
 
@@ -39,9 +32,7 @@ public final class AVarDeclaracao extends PDeclaracao
     {
         return new AVarDeclaracao(
             cloneNode(this._tipo_),
-            cloneNode(this._doisPontos_),
-            cloneNode(this._varSequence_),
-            cloneNode(this._pontoVirgula_));
+            cloneList(this._var_));
     }
 
     @Override
@@ -75,79 +66,30 @@ public final class AVarDeclaracao extends PDeclaracao
         this._tipo_ = node;
     }
 
-    public TDoisPontos getDoisPontos()
+    public LinkedList<PVar> getVar()
     {
-        return this._doisPontos_;
+        return this._var_;
     }
 
-    public void setDoisPontos(TDoisPontos node)
+    public void setVar(List<?> list)
     {
-        if(this._doisPontos_ != null)
+        for(PVar e : this._var_)
         {
-            this._doisPontos_.parent(null);
+            e.parent(null);
         }
+        this._var_.clear();
 
-        if(node != null)
+        for(Object obj_e : list)
         {
-            if(node.parent() != null)
+            PVar e = (PVar) obj_e;
+            if(e.parent() != null)
             {
-                node.parent().removeChild(node);
+                e.parent().removeChild(e);
             }
 
-            node.parent(this);
+            e.parent(this);
+            this._var_.add(e);
         }
-
-        this._doisPontos_ = node;
-    }
-
-    public PVarSequence getVarSequence()
-    {
-        return this._varSequence_;
-    }
-
-    public void setVarSequence(PVarSequence node)
-    {
-        if(this._varSequence_ != null)
-        {
-            this._varSequence_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._varSequence_ = node;
-    }
-
-    public TPontoVirgula getPontoVirgula()
-    {
-        return this._pontoVirgula_;
-    }
-
-    public void setPontoVirgula(TPontoVirgula node)
-    {
-        if(this._pontoVirgula_ != null)
-        {
-            this._pontoVirgula_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._pontoVirgula_ = node;
     }
 
     @Override
@@ -155,9 +97,7 @@ public final class AVarDeclaracao extends PDeclaracao
     {
         return ""
             + toString(this._tipo_)
-            + toString(this._doisPontos_)
-            + toString(this._varSequence_)
-            + toString(this._pontoVirgula_);
+            + toString(this._var_);
     }
 
     @Override
@@ -170,21 +110,8 @@ public final class AVarDeclaracao extends PDeclaracao
             return;
         }
 
-        if(this._doisPontos_ == child)
+        if(this._var_.remove(child))
         {
-            this._doisPontos_ = null;
-            return;
-        }
-
-        if(this._varSequence_ == child)
-        {
-            this._varSequence_ = null;
-            return;
-        }
-
-        if(this._pontoVirgula_ == child)
-        {
-            this._pontoVirgula_ = null;
             return;
         }
 
@@ -201,22 +128,22 @@ public final class AVarDeclaracao extends PDeclaracao
             return;
         }
 
-        if(this._doisPontos_ == oldChild)
+        for(ListIterator<PVar> i = this._var_.listIterator(); i.hasNext();)
         {
-            setDoisPontos((TDoisPontos) newChild);
-            return;
-        }
+            if(i.next() == oldChild)
+            {
+                if(newChild != null)
+                {
+                    i.set((PVar) newChild);
+                    newChild.parent(this);
+                    oldChild.parent(null);
+                    return;
+                }
 
-        if(this._varSequence_ == oldChild)
-        {
-            setVarSequence((PVarSequence) newChild);
-            return;
-        }
-
-        if(this._pontoVirgula_ == oldChild)
-        {
-            setPontoVirgula((TPontoVirgula) newChild);
-            return;
+                i.remove();
+                oldChild.parent(null);
+                return;
+            }
         }
 
         throw new RuntimeException("Not a child.");

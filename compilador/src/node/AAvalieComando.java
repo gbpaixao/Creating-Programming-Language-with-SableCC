@@ -2,18 +2,14 @@
 
 package node;
 
+import java.util.*;
 import analysis.*;
 
 @SuppressWarnings("nls")
 public final class AAvalieComando extends PComando
 {
-    private TAvalie _avalie_;
-    private TAbreParenteses _abreParenteses_;
     private PExp _exp_;
-    private TFechaParenteses _fechaParenteses_;
-    private PCaseSequence _caseSequence_;
-    private TFimAvalie _fimAvalie_;
-    private TPontoVirgula _pontoVirgula_;
+    private final LinkedList<PCase> _case_ = new LinkedList<PCase>();
 
     public AAvalieComando()
     {
@@ -21,28 +17,13 @@ public final class AAvalieComando extends PComando
     }
 
     public AAvalieComando(
-        @SuppressWarnings("hiding") TAvalie _avalie_,
-        @SuppressWarnings("hiding") TAbreParenteses _abreParenteses_,
         @SuppressWarnings("hiding") PExp _exp_,
-        @SuppressWarnings("hiding") TFechaParenteses _fechaParenteses_,
-        @SuppressWarnings("hiding") PCaseSequence _caseSequence_,
-        @SuppressWarnings("hiding") TFimAvalie _fimAvalie_,
-        @SuppressWarnings("hiding") TPontoVirgula _pontoVirgula_)
+        @SuppressWarnings("hiding") List<?> _case_)
     {
         // Constructor
-        setAvalie(_avalie_);
-
-        setAbreParenteses(_abreParenteses_);
-
         setExp(_exp_);
 
-        setFechaParenteses(_fechaParenteses_);
-
-        setCaseSequence(_caseSequence_);
-
-        setFimAvalie(_fimAvalie_);
-
-        setPontoVirgula(_pontoVirgula_);
+        setCase(_case_);
 
     }
 
@@ -50,69 +31,14 @@ public final class AAvalieComando extends PComando
     public Object clone()
     {
         return new AAvalieComando(
-            cloneNode(this._avalie_),
-            cloneNode(this._abreParenteses_),
             cloneNode(this._exp_),
-            cloneNode(this._fechaParenteses_),
-            cloneNode(this._caseSequence_),
-            cloneNode(this._fimAvalie_),
-            cloneNode(this._pontoVirgula_));
+            cloneList(this._case_));
     }
 
     @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAAvalieComando(this);
-    }
-
-    public TAvalie getAvalie()
-    {
-        return this._avalie_;
-    }
-
-    public void setAvalie(TAvalie node)
-    {
-        if(this._avalie_ != null)
-        {
-            this._avalie_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._avalie_ = node;
-    }
-
-    public TAbreParenteses getAbreParenteses()
-    {
-        return this._abreParenteses_;
-    }
-
-    public void setAbreParenteses(TAbreParenteses node)
-    {
-        if(this._abreParenteses_ != null)
-        {
-            this._abreParenteses_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._abreParenteses_ = node;
     }
 
     public PExp getExp()
@@ -140,162 +66,52 @@ public final class AAvalieComando extends PComando
         this._exp_ = node;
     }
 
-    public TFechaParenteses getFechaParenteses()
+    public LinkedList<PCase> getCase()
     {
-        return this._fechaParenteses_;
+        return this._case_;
     }
 
-    public void setFechaParenteses(TFechaParenteses node)
+    public void setCase(List<?> list)
     {
-        if(this._fechaParenteses_ != null)
+        for(PCase e : this._case_)
         {
-            this._fechaParenteses_.parent(null);
+            e.parent(null);
         }
+        this._case_.clear();
 
-        if(node != null)
+        for(Object obj_e : list)
         {
-            if(node.parent() != null)
+            PCase e = (PCase) obj_e;
+            if(e.parent() != null)
             {
-                node.parent().removeChild(node);
+                e.parent().removeChild(e);
             }
 
-            node.parent(this);
+            e.parent(this);
+            this._case_.add(e);
         }
-
-        this._fechaParenteses_ = node;
-    }
-
-    public PCaseSequence getCaseSequence()
-    {
-        return this._caseSequence_;
-    }
-
-    public void setCaseSequence(PCaseSequence node)
-    {
-        if(this._caseSequence_ != null)
-        {
-            this._caseSequence_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._caseSequence_ = node;
-    }
-
-    public TFimAvalie getFimAvalie()
-    {
-        return this._fimAvalie_;
-    }
-
-    public void setFimAvalie(TFimAvalie node)
-    {
-        if(this._fimAvalie_ != null)
-        {
-            this._fimAvalie_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._fimAvalie_ = node;
-    }
-
-    public TPontoVirgula getPontoVirgula()
-    {
-        return this._pontoVirgula_;
-    }
-
-    public void setPontoVirgula(TPontoVirgula node)
-    {
-        if(this._pontoVirgula_ != null)
-        {
-            this._pontoVirgula_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._pontoVirgula_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._avalie_)
-            + toString(this._abreParenteses_)
             + toString(this._exp_)
-            + toString(this._fechaParenteses_)
-            + toString(this._caseSequence_)
-            + toString(this._fimAvalie_)
-            + toString(this._pontoVirgula_);
+            + toString(this._case_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._avalie_ == child)
-        {
-            this._avalie_ = null;
-            return;
-        }
-
-        if(this._abreParenteses_ == child)
-        {
-            this._abreParenteses_ = null;
-            return;
-        }
-
         if(this._exp_ == child)
         {
             this._exp_ = null;
             return;
         }
 
-        if(this._fechaParenteses_ == child)
+        if(this._case_.remove(child))
         {
-            this._fechaParenteses_ = null;
-            return;
-        }
-
-        if(this._caseSequence_ == child)
-        {
-            this._caseSequence_ = null;
-            return;
-        }
-
-        if(this._fimAvalie_ == child)
-        {
-            this._fimAvalie_ = null;
-            return;
-        }
-
-        if(this._pontoVirgula_ == child)
-        {
-            this._pontoVirgula_ = null;
             return;
         }
 
@@ -306,46 +122,28 @@ public final class AAvalieComando extends PComando
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._avalie_ == oldChild)
-        {
-            setAvalie((TAvalie) newChild);
-            return;
-        }
-
-        if(this._abreParenteses_ == oldChild)
-        {
-            setAbreParenteses((TAbreParenteses) newChild);
-            return;
-        }
-
         if(this._exp_ == oldChild)
         {
             setExp((PExp) newChild);
             return;
         }
 
-        if(this._fechaParenteses_ == oldChild)
+        for(ListIterator<PCase> i = this._case_.listIterator(); i.hasNext();)
         {
-            setFechaParenteses((TFechaParenteses) newChild);
-            return;
-        }
+            if(i.next() == oldChild)
+            {
+                if(newChild != null)
+                {
+                    i.set((PCase) newChild);
+                    newChild.parent(this);
+                    oldChild.parent(null);
+                    return;
+                }
 
-        if(this._caseSequence_ == oldChild)
-        {
-            setCaseSequence((PCaseSequence) newChild);
-            return;
-        }
-
-        if(this._fimAvalie_ == oldChild)
-        {
-            setFimAvalie((TFimAvalie) newChild);
-            return;
-        }
-
-        if(this._pontoVirgula_ == oldChild)
-        {
-            setPontoVirgula((TPontoVirgula) newChild);
-            return;
+                i.remove();
+                oldChild.parent(null);
+                return;
+            }
         }
 
         throw new RuntimeException("Not a child.");

@@ -2,17 +2,15 @@
 
 package node;
 
+import java.util.*;
 import analysis.*;
 
 @SuppressWarnings("nls")
 public final class AStart extends PStart
 {
-    private TPrograma _programa_;
     private TId _id_;
-    private TInicio _inicio_;
-    private PDeclSequence _declSequence_;
-    private PCmdSequence _cmdSequence_;
-    private TFim _fim_;
+    private final LinkedList<PDeclaracao> _declaracao_ = new LinkedList<PDeclaracao>();
+    private final LinkedList<PComando> _comando_ = new LinkedList<PComando>();
 
     public AStart()
     {
@@ -20,25 +18,16 @@ public final class AStart extends PStart
     }
 
     public AStart(
-        @SuppressWarnings("hiding") TPrograma _programa_,
         @SuppressWarnings("hiding") TId _id_,
-        @SuppressWarnings("hiding") TInicio _inicio_,
-        @SuppressWarnings("hiding") PDeclSequence _declSequence_,
-        @SuppressWarnings("hiding") PCmdSequence _cmdSequence_,
-        @SuppressWarnings("hiding") TFim _fim_)
+        @SuppressWarnings("hiding") List<?> _declaracao_,
+        @SuppressWarnings("hiding") List<?> _comando_)
     {
         // Constructor
-        setPrograma(_programa_);
-
         setId(_id_);
 
-        setInicio(_inicio_);
+        setDeclaracao(_declaracao_);
 
-        setDeclSequence(_declSequence_);
-
-        setCmdSequence(_cmdSequence_);
-
-        setFim(_fim_);
+        setComando(_comando_);
 
     }
 
@@ -46,43 +35,15 @@ public final class AStart extends PStart
     public Object clone()
     {
         return new AStart(
-            cloneNode(this._programa_),
             cloneNode(this._id_),
-            cloneNode(this._inicio_),
-            cloneNode(this._declSequence_),
-            cloneNode(this._cmdSequence_),
-            cloneNode(this._fim_));
+            cloneList(this._declaracao_),
+            cloneList(this._comando_));
     }
 
     @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAStart(this);
-    }
-
-    public TPrograma getPrograma()
-    {
-        return this._programa_;
-    }
-
-    public void setPrograma(TPrograma node)
-    {
-        if(this._programa_ != null)
-        {
-            this._programa_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._programa_ = node;
     }
 
     public TId getId()
@@ -110,155 +71,84 @@ public final class AStart extends PStart
         this._id_ = node;
     }
 
-    public TInicio getInicio()
+    public LinkedList<PDeclaracao> getDeclaracao()
     {
-        return this._inicio_;
+        return this._declaracao_;
     }
 
-    public void setInicio(TInicio node)
+    public void setDeclaracao(List<?> list)
     {
-        if(this._inicio_ != null)
+        for(PDeclaracao e : this._declaracao_)
         {
-            this._inicio_.parent(null);
+            e.parent(null);
         }
+        this._declaracao_.clear();
 
-        if(node != null)
+        for(Object obj_e : list)
         {
-            if(node.parent() != null)
+            PDeclaracao e = (PDeclaracao) obj_e;
+            if(e.parent() != null)
             {
-                node.parent().removeChild(node);
+                e.parent().removeChild(e);
             }
 
-            node.parent(this);
+            e.parent(this);
+            this._declaracao_.add(e);
         }
-
-        this._inicio_ = node;
     }
 
-    public PDeclSequence getDeclSequence()
+    public LinkedList<PComando> getComando()
     {
-        return this._declSequence_;
+        return this._comando_;
     }
 
-    public void setDeclSequence(PDeclSequence node)
+    public void setComando(List<?> list)
     {
-        if(this._declSequence_ != null)
+        for(PComando e : this._comando_)
         {
-            this._declSequence_.parent(null);
+            e.parent(null);
         }
+        this._comando_.clear();
 
-        if(node != null)
+        for(Object obj_e : list)
         {
-            if(node.parent() != null)
+            PComando e = (PComando) obj_e;
+            if(e.parent() != null)
             {
-                node.parent().removeChild(node);
+                e.parent().removeChild(e);
             }
 
-            node.parent(this);
+            e.parent(this);
+            this._comando_.add(e);
         }
-
-        this._declSequence_ = node;
-    }
-
-    public PCmdSequence getCmdSequence()
-    {
-        return this._cmdSequence_;
-    }
-
-    public void setCmdSequence(PCmdSequence node)
-    {
-        if(this._cmdSequence_ != null)
-        {
-            this._cmdSequence_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._cmdSequence_ = node;
-    }
-
-    public TFim getFim()
-    {
-        return this._fim_;
-    }
-
-    public void setFim(TFim node)
-    {
-        if(this._fim_ != null)
-        {
-            this._fim_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._fim_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._programa_)
             + toString(this._id_)
-            + toString(this._inicio_)
-            + toString(this._declSequence_)
-            + toString(this._cmdSequence_)
-            + toString(this._fim_);
+            + toString(this._declaracao_)
+            + toString(this._comando_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._programa_ == child)
-        {
-            this._programa_ = null;
-            return;
-        }
-
         if(this._id_ == child)
         {
             this._id_ = null;
             return;
         }
 
-        if(this._inicio_ == child)
+        if(this._declaracao_.remove(child))
         {
-            this._inicio_ = null;
             return;
         }
 
-        if(this._declSequence_ == child)
+        if(this._comando_.remove(child))
         {
-            this._declSequence_ = null;
-            return;
-        }
-
-        if(this._cmdSequence_ == child)
-        {
-            this._cmdSequence_ = null;
-            return;
-        }
-
-        if(this._fim_ == child)
-        {
-            this._fim_ = null;
             return;
         }
 
@@ -269,40 +159,46 @@ public final class AStart extends PStart
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._programa_ == oldChild)
-        {
-            setPrograma((TPrograma) newChild);
-            return;
-        }
-
         if(this._id_ == oldChild)
         {
             setId((TId) newChild);
             return;
         }
 
-        if(this._inicio_ == oldChild)
+        for(ListIterator<PDeclaracao> i = this._declaracao_.listIterator(); i.hasNext();)
         {
-            setInicio((TInicio) newChild);
-            return;
+            if(i.next() == oldChild)
+            {
+                if(newChild != null)
+                {
+                    i.set((PDeclaracao) newChild);
+                    newChild.parent(this);
+                    oldChild.parent(null);
+                    return;
+                }
+
+                i.remove();
+                oldChild.parent(null);
+                return;
+            }
         }
 
-        if(this._declSequence_ == oldChild)
+        for(ListIterator<PComando> i = this._comando_.listIterator(); i.hasNext();)
         {
-            setDeclSequence((PDeclSequence) newChild);
-            return;
-        }
+            if(i.next() == oldChild)
+            {
+                if(newChild != null)
+                {
+                    i.set((PComando) newChild);
+                    newChild.parent(this);
+                    oldChild.parent(null);
+                    return;
+                }
 
-        if(this._cmdSequence_ == oldChild)
-        {
-            setCmdSequence((PCmdSequence) newChild);
-            return;
-        }
-
-        if(this._fim_ == oldChild)
-        {
-            setFim((TFim) newChild);
-            return;
+                i.remove();
+                oldChild.parent(null);
+                return;
+            }
         }
 
         throw new RuntimeException("Not a child.");

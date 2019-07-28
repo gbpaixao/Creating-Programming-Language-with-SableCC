@@ -2,15 +2,14 @@
 
 package node;
 
+import java.util.*;
 import analysis.*;
 
 @SuppressWarnings("nls")
 public final class ACase extends PCase
 {
-    private TCaso _caso_;
     private PValor _valor_;
-    private TDoisPontos _doisPontos_;
-    private PCmdSequence _cmdSequence_;
+    private final LinkedList<PComando> _comando_ = new LinkedList<PComando>();
 
     public ACase()
     {
@@ -18,19 +17,13 @@ public final class ACase extends PCase
     }
 
     public ACase(
-        @SuppressWarnings("hiding") TCaso _caso_,
         @SuppressWarnings("hiding") PValor _valor_,
-        @SuppressWarnings("hiding") TDoisPontos _doisPontos_,
-        @SuppressWarnings("hiding") PCmdSequence _cmdSequence_)
+        @SuppressWarnings("hiding") List<?> _comando_)
     {
         // Constructor
-        setCaso(_caso_);
-
         setValor(_valor_);
 
-        setDoisPontos(_doisPontos_);
-
-        setCmdSequence(_cmdSequence_);
+        setComando(_comando_);
 
     }
 
@@ -38,41 +31,14 @@ public final class ACase extends PCase
     public Object clone()
     {
         return new ACase(
-            cloneNode(this._caso_),
             cloneNode(this._valor_),
-            cloneNode(this._doisPontos_),
-            cloneNode(this._cmdSequence_));
+            cloneList(this._comando_));
     }
 
     @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseACase(this);
-    }
-
-    public TCaso getCaso()
-    {
-        return this._caso_;
-    }
-
-    public void setCaso(TCaso node)
-    {
-        if(this._caso_ != null)
-        {
-            this._caso_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._caso_ = node;
     }
 
     public PValor getValor()
@@ -100,91 +66,52 @@ public final class ACase extends PCase
         this._valor_ = node;
     }
 
-    public TDoisPontos getDoisPontos()
+    public LinkedList<PComando> getComando()
     {
-        return this._doisPontos_;
+        return this._comando_;
     }
 
-    public void setDoisPontos(TDoisPontos node)
+    public void setComando(List<?> list)
     {
-        if(this._doisPontos_ != null)
+        for(PComando e : this._comando_)
         {
-            this._doisPontos_.parent(null);
+            e.parent(null);
         }
+        this._comando_.clear();
 
-        if(node != null)
+        for(Object obj_e : list)
         {
-            if(node.parent() != null)
+            PComando e = (PComando) obj_e;
+            if(e.parent() != null)
             {
-                node.parent().removeChild(node);
+                e.parent().removeChild(e);
             }
 
-            node.parent(this);
+            e.parent(this);
+            this._comando_.add(e);
         }
-
-        this._doisPontos_ = node;
-    }
-
-    public PCmdSequence getCmdSequence()
-    {
-        return this._cmdSequence_;
-    }
-
-    public void setCmdSequence(PCmdSequence node)
-    {
-        if(this._cmdSequence_ != null)
-        {
-            this._cmdSequence_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._cmdSequence_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._caso_)
             + toString(this._valor_)
-            + toString(this._doisPontos_)
-            + toString(this._cmdSequence_);
+            + toString(this._comando_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._caso_ == child)
-        {
-            this._caso_ = null;
-            return;
-        }
-
         if(this._valor_ == child)
         {
             this._valor_ = null;
             return;
         }
 
-        if(this._doisPontos_ == child)
+        if(this._comando_.remove(child))
         {
-            this._doisPontos_ = null;
-            return;
-        }
-
-        if(this._cmdSequence_ == child)
-        {
-            this._cmdSequence_ = null;
             return;
         }
 
@@ -195,28 +122,28 @@ public final class ACase extends PCase
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._caso_ == oldChild)
-        {
-            setCaso((TCaso) newChild);
-            return;
-        }
-
         if(this._valor_ == oldChild)
         {
             setValor((PValor) newChild);
             return;
         }
 
-        if(this._doisPontos_ == oldChild)
+        for(ListIterator<PComando> i = this._comando_.listIterator(); i.hasNext();)
         {
-            setDoisPontos((TDoisPontos) newChild);
-            return;
-        }
+            if(i.next() == oldChild)
+            {
+                if(newChild != null)
+                {
+                    i.set((PComando) newChild);
+                    newChild.parent(this);
+                    oldChild.parent(null);
+                    return;
+                }
 
-        if(this._cmdSequence_ == oldChild)
-        {
-            setCmdSequence((PCmdSequence) newChild);
-            return;
+                i.remove();
+                oldChild.parent(null);
+                return;
+            }
         }
 
         throw new RuntimeException("Not a child.");

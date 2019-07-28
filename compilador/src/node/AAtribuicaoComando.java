@@ -8,9 +8,7 @@ import analysis.*;
 public final class AAtribuicaoComando extends PComando
 {
     private PVar _var_;
-    private TDoisPontosIgual _doisPontosIgual_;
     private PExp _exp_;
-    private TPontoVirgula _pontoVirgula_;
 
     public AAtribuicaoComando()
     {
@@ -19,18 +17,12 @@ public final class AAtribuicaoComando extends PComando
 
     public AAtribuicaoComando(
         @SuppressWarnings("hiding") PVar _var_,
-        @SuppressWarnings("hiding") TDoisPontosIgual _doisPontosIgual_,
-        @SuppressWarnings("hiding") PExp _exp_,
-        @SuppressWarnings("hiding") TPontoVirgula _pontoVirgula_)
+        @SuppressWarnings("hiding") PExp _exp_)
     {
         // Constructor
         setVar(_var_);
 
-        setDoisPontosIgual(_doisPontosIgual_);
-
         setExp(_exp_);
-
-        setPontoVirgula(_pontoVirgula_);
 
     }
 
@@ -39,9 +31,7 @@ public final class AAtribuicaoComando extends PComando
     {
         return new AAtribuicaoComando(
             cloneNode(this._var_),
-            cloneNode(this._doisPontosIgual_),
-            cloneNode(this._exp_),
-            cloneNode(this._pontoVirgula_));
+            cloneNode(this._exp_));
     }
 
     @Override
@@ -75,31 +65,6 @@ public final class AAtribuicaoComando extends PComando
         this._var_ = node;
     }
 
-    public TDoisPontosIgual getDoisPontosIgual()
-    {
-        return this._doisPontosIgual_;
-    }
-
-    public void setDoisPontosIgual(TDoisPontosIgual node)
-    {
-        if(this._doisPontosIgual_ != null)
-        {
-            this._doisPontosIgual_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._doisPontosIgual_ = node;
-    }
-
     public PExp getExp()
     {
         return this._exp_;
@@ -125,39 +90,12 @@ public final class AAtribuicaoComando extends PComando
         this._exp_ = node;
     }
 
-    public TPontoVirgula getPontoVirgula()
-    {
-        return this._pontoVirgula_;
-    }
-
-    public void setPontoVirgula(TPontoVirgula node)
-    {
-        if(this._pontoVirgula_ != null)
-        {
-            this._pontoVirgula_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._pontoVirgula_ = node;
-    }
-
     @Override
     public String toString()
     {
         return ""
             + toString(this._var_)
-            + toString(this._doisPontosIgual_)
-            + toString(this._exp_)
-            + toString(this._pontoVirgula_);
+            + toString(this._exp_);
     }
 
     @Override
@@ -170,21 +108,9 @@ public final class AAtribuicaoComando extends PComando
             return;
         }
 
-        if(this._doisPontosIgual_ == child)
-        {
-            this._doisPontosIgual_ = null;
-            return;
-        }
-
         if(this._exp_ == child)
         {
             this._exp_ = null;
-            return;
-        }
-
-        if(this._pontoVirgula_ == child)
-        {
-            this._pontoVirgula_ = null;
             return;
         }
 
@@ -201,21 +127,9 @@ public final class AAtribuicaoComando extends PComando
             return;
         }
 
-        if(this._doisPontosIgual_ == oldChild)
-        {
-            setDoisPontosIgual((TDoisPontosIgual) newChild);
-            return;
-        }
-
         if(this._exp_ == oldChild)
         {
             setExp((PExp) newChild);
-            return;
-        }
-
-        if(this._pontoVirgula_ == oldChild)
-        {
-            setPontoVirgula((TPontoVirgula) newChild);
             return;
         }
 
