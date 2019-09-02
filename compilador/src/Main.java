@@ -15,16 +15,11 @@ public class Main {
 				Parser p = new Parser (lexer);
 				Start tree = p.parse();
 				
-				// Impressão da Árvore Sintática em string
-				//System.out.println(tree.toString());
-				
 				// Impressão da Árvore Sintática em texto, mas formatado
-				tree.apply(new ASTPrinter());
+				//tree.apply(new ASTPrinter());
+				tree.apply(new AnaliseSemantica()); 
 				
-				// Impressão da Árvore Sintática com o JFrame
-				tree.apply(new ASTDisplay()); 
-				
-				System.out.println("\nAnálise sintática realizada!");
+				System.out.println("Análise semântica realizada!");
 				
 			} 
 			catch (Exception e) {

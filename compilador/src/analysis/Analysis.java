@@ -122,7 +122,6 @@ public interface Analysis extends Switch
     void caseTId(TId node);
     void caseTInt(TInt node);
     void caseTFloat(TFloat node);
-    void caseTChar(TChar node);
     void caseTString(TString node);
     void caseTComentarioLinha(TComentarioLinha node);
     void caseTComentarioBlocoAbre(TComentarioBlocoAbre node);

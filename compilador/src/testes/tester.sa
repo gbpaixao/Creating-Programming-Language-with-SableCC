@@ -1,62 +1,10 @@
 programa tester 
 inicio 
 
-// Declaracao de variaveis
-inteiro: a1, a2, a3, i;
-real: b1, b2, b3;
-caractere: c1, c2;
+inteiro: a[31], b;
+const c 1;
 
-// testes sobre comando e exp
-escreva('oi');
-leia (c1, c2);
+//a[1] := b[1];
+a[1] := 1 + 2 + 3;
 
-a1 := 1;
-a2 := 2;
-a3 := 0;
-b1 := 0;
-b2 := 0;
-b3 := 0;
-i := 0;
-
-se (a1 >= a2) entao
-	a3 := (a1 - a2);
-senao 
-	a3 := a2 - a1; 
-fim se;
-
-// a3 = 1;
-avalie (a3)
-	caso 0: b1:=0;
-	caso 1: b1:=1;
-	caso 2: b1:=2;
-	caso 3: b1:=3;
-	senao : b1:= 10;
-fim avalie;
-
-// b1 = 1;
-enquanto (b1 > 0) faca
-	b2 := b2 + 1;
-	b1 := b1 - 1;
-fim enquanto;
-
-// b1 = 0; b2 = 1;
-repita 
-	b3 := b3 + 1; 
-	b3 := b3 * b2;
-ate (b3 = 3);
-
-//b3 = 3;
-para i de 0 ate 1 faca 
-	b3 := b3 - 1;
-	escreva (b3);
-fim para;
-
-// b3 = 1;
-
-para i de 0 passo 2 ate 2 faca 
-	b1 := b1 + (b3/b2);
-	escreva (b1);
-fim para;
-
-// b1 = 2;
 fim.

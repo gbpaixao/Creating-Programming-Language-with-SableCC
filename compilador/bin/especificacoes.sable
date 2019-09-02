@@ -92,7 +92,7 @@ Tokens
 	{normal} id = (underscore | letra_mai | letra_min) (letra_mai | letra_min | digito | underscore)*;
 	{normal} int = digito+;
 	{normal} float = digito+ ',' digito+;
-	{normal} char = aspas_simples [all-39] aspas_simples;
+	//{normal} char = aspas_simples [all-39] aspas_simples;
 	{normal} string = aspas_simples [all-39]* aspas_simples;
 
 	{normal} comentario_linha = '//' all*;
