@@ -418,18 +418,3 @@ public class AnaliseSemantica extends DepthFirstAdapter {
 					throw new MyException(" A variável '" + b + "' não é um vetor."); // lança exceção
 	}	
 }
-
-// FALTA FAZER
-/*
- * 	A questão do tipo String (não existe). O que existe é vetor de caracteres. Pensar em teste relacionados a isso.
- *  Por exemplo: se uma variável é declarada como caractere, não pode atribuir diretamente, ou sei lá.
- *  Se ela for um vetor de strings o formato vai ser vetstr[name]
- *  
- *  Tem na documentação:
- *  As expressões em se e enquanto devem avaliar um tipo booleano
- *  Em operações entre os tipos inteiro e real, os valores inteiros devem ser
-convertidos para reais.
-
-	Validação de escopo e de existência de identificadores
-	Verificação de tipos
- */
