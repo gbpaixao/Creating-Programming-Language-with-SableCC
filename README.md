@@ -1,4 +1,4 @@
-# compiladoresufs
+# Creating-Programming-Language-with-SableCC
 
   Building programming language using SableCC in Eclipse Java, as result of the subject of Compilers coursed at the Federal University of Sergipe, Brazil, in 2019.
 
